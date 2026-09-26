@@ -377,6 +377,7 @@ binary target.
 
   `online_order`                     Whether the transaction was made
                                      online
+
   ---------------------------------------------------------------------
 
 Target:
@@ -422,6 +423,7 @@ exactly balanced target distribution.
 
   `different_merchants_last_30min`          Number of different merchants
                                             recently used
+
   -------------------------------------------------------------------------
 
 Target:
