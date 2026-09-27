@@ -65,7 +65,7 @@ public class CreditCardFraudFFNetwork {
                 .build();
 
         neuralNet.getTrainer()
-                .setStopError(0.15f)
+                .setStopError(0.03f)
                 .setStopEpochs(100)
                 .setLearningRate(0.001f);
 

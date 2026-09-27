@@ -13,7 +13,7 @@
                 <exec.vmArgs>--add-modules jdk.incubator.vector --enable-native-access=ALL-UNNAMED</exec.vmArgs>
                 <exec.args>${exec.vmArgs} -classpath %classpath ${exec.mainClass} ${exec.appArgs}</exec.args>
                 <exec.appArgs></exec.appArgs>
-                <exec.mainClass>com.deepnetts.examples.frauddetection.models.CreditCardFraudAutoencoder</exec.mainClass>
+                <exec.mainClass>com.deepnetts.examples.frauddetection.models.CreditCardFraudFFNetworkBatch</exec.mainClass>
                 <exec.executable>java</exec.executable>
             </properties>
         </action>
@@ -30,7 +30,7 @@
                 <exec.vmArgs>--add-modules jdk.incubator.vector --enable-native-access=ALL-UNNAMED -agentlib:jdwp=transport=dt_socket,server=n,address=${jpda.address}</exec.vmArgs>
                 <exec.args>${exec.vmArgs} -classpath %classpath ${exec.mainClass} ${exec.appArgs}</exec.args>
                 <exec.appArgs></exec.appArgs>
-                <exec.mainClass>com.deepnetts.examples.frauddetection.models.CreditCardFraudAutoencoder</exec.mainClass>
+                <exec.mainClass>com.deepnetts.examples.frauddetection.models.CreditCardFraudFFNetworkBatch</exec.mainClass>
                 <exec.executable>java</exec.executable>
                 <jpda.listen>true</jpda.listen>
             </properties>
@@ -47,7 +47,7 @@
             <properties>
                 <exec.vmArgs>--add-modules jdk.incubator.vector --enable-native-access=ALL-UNNAMED</exec.vmArgs>
                 <exec.args>${exec.vmArgs} -classpath %classpath ${exec.mainClass} ${exec.appArgs}</exec.args>
-                <exec.mainClass>com.deepnetts.examples.frauddetection.models.CreditCardFraudAutoencoder</exec.mainClass>
+                <exec.mainClass>com.deepnetts.examples.frauddetection.models.CreditCardFraudFFNetworkBatch</exec.mainClass>
                 <exec.executable>java</exec.executable>
                 <exec.appArgs></exec.appArgs>
             </properties>
