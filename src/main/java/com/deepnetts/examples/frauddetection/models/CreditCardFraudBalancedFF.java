@@ -8,17 +8,22 @@ import deepnetts.data.MLDataItem;
 import deepnetts.data.TabularDataSet;
 import deepnetts.data.norm.MaxScaler;
 import deepnetts.net.FeedForwardNetwork;
+import deepnetts.net.NeuralNetwork;
 import deepnetts.net.layers.activation.ActivationType;
 import deepnetts.net.loss.LossType;
 import deepnetts.util.DeepNettsException;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import javax.visrec.ml.eval.EvaluationMetrics;
 
 public class CreditCardFraudBalancedFF {
+    
+    private static final String MODEL_PATH = "models/balanced-feedforward-network.dnet";
 
-    public static void main(String[] args) throws DeepNettsException, IOException {
+    public static void main(String[] args) throws DeepNettsException, IOException, ClassNotFoundException {
 
         DataPreparation dataPreparation = new DataPreparation(FraudDatasetConfigs.BALANCED_DATASET_CONFIG);
 
@@ -63,6 +68,19 @@ public class CreditCardFraudBalancedFF {
                 .setEarlyStoppingMinLossChange(0.001f);
 
         neuralNet.train(trainingSet);
+        
+        Files.createDirectories(Path.of("models"));
+        neuralNet.save(MODEL_PATH);
+
+        FeedForwardNetwork loadedModel = NeuralNetwork.load(MODEL_PATH, FeedForwardNetwork.class);
+
+        MLDataItem sample = testSet.getItems().get(0);
+        float[] input = sample.getInput().getValues();
+        float[] prediction = loadedModel.predict(input);
+
+        System.out.println("\n=== LOADED MODEL PREDICTION ===");
+        System.out.println("Predicted fraud probability: " + prediction[0]);
+        System.out.println("Actual label: " + sample.getTargetOutput().getValues()[0]);
 
         EvaluationMetrics evaluation = neuralNet.test(testSet);
 
