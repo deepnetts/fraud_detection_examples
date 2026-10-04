@@ -9,6 +9,7 @@ import deepnetts.data.MLDataItem;
 import deepnetts.data.TabularDataSet;
 import deepnetts.data.norm.MaxScaler;
 import deepnetts.net.FeedForwardNetwork;
+import deepnetts.net.NeuralNetwork;
 import deepnetts.net.layers.activation.ActivationType;
 import deepnetts.net.loss.LossType;
 import deepnetts.util.DeepNettsException;
@@ -53,7 +54,7 @@ public class CreditCardFraudFFNetwork {
         scaler.apply(testSet);
         
         // Enable Vector API to compare training performance:
-        DeepNetts.getInstance().setUseVectorAPI(true);
+        DeepNetts.getInstance().setUseVectorAPI(false);
         DeepNetts.getInstance().setMaxThreads(1);
 
         FeedForwardNetwork neuralNet = FeedForwardNetwork.builder()
@@ -75,5 +76,15 @@ public class CreditCardFraudFFNetwork {
 
         System.out.println("\n=== FEEDFORWARD NETWORK TEST RESULTS ===");
         System.out.println(evaluation);
+        
+        neuralNet.save("testnet.dnet");
+        
+        try {
+            FeedForwardNetwork nnet = NeuralNetwork.load("testnet.dnet", FeedForwardNetwork.class);
+            System.out.println("ucitao sve ok");
+        } catch (ClassNotFoundException ex) {
+            System.getLogger(CreditCardFraudFFNetwork.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            System.out.println("puce bem ti");
+        }
     }
 }
