@@ -10,6 +10,7 @@ import deepnetts.data.MLDataItem;
 import deepnetts.data.TabularDataSet;
 import deepnetts.data.norm.MaxScaler;
 import deepnetts.net.FeedForwardNetwork;
+import deepnetts.net.NeuralNetwork;
 import deepnetts.net.layers.activation.ActivationType;
 import deepnetts.net.loss.LossType;
 import deepnetts.net.train.TrainingEvent;
@@ -17,6 +18,9 @@ import deepnetts.net.train.TrainingListener;
 import deepnetts.util.DeepNettsException;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -29,8 +33,9 @@ public class CreditCardFraudAutoencoder {
 
     private static final double AUTOENCODER_TRAIN_RATIO = 0.9;
     private static final long RANDOM_SEED = 42;
+    private static final String MODEL_PATH = "models/autoencoder.dnet";
 
-    public static void main(String[] args) throws DeepNettsException, IOException {
+    public static void main(String[] args) throws DeepNettsException, IOException, ClassNotFoundException {
 
         DatasetConfig config = FraudDatasetConfigs.IMBALANCED_DATASET_CONFIG;
         DataPreparation dataPreparation = new DataPreparation(config);
@@ -133,6 +138,11 @@ public class CreditCardFraudAutoencoder {
         // Train only on normal transactions.
         autoencoder.train(aeTrainingSet);
 
+        Files.createDirectories(Path.of("models"));
+        autoencoder.save(MODEL_PATH);
+
+        FeedForwardNetwork loadedAutoencoder = NeuralNetwork.load(MODEL_PATH, FeedForwardNetwork.class);
+
         TrainingLossChart.save(epochs, trainingLosses, "autoencoder-training-loss");
 
         // Select the anomaly threshold on a separate calibration set.
@@ -141,6 +151,15 @@ public class CreditCardFraudAutoencoder {
         System.out.println("\n=== THRESHOLD CALIBRATION ===");
         System.out.println("Threshold: " + calibration.threshold);
         System.out.println("Calibration F1: " + calibration.f1);
+
+        MLDataItem sample = testSet.getItems().get(0);
+        double reconstructionError = reconstructionError(loadedAutoencoder, sample);
+        int predictedFraud = reconstructionError > calibration.threshold ? 1 : 0;
+
+        System.out.println("\n=== LOADED AUTOENCODER PREDICTION ===");
+        System.out.println("Reconstruction error: " + reconstructionError);
+        System.out.println("Predicted fraud: " + predictedFraud);
+        System.out.println("Actual label: " + sample.getTargetOutput().getValues()[0]);
 
         // Evaluate once on the untouched test set.
         EvaluationResult result = evaluate(autoencoder, testSet, calibration.threshold);

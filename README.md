@@ -41,12 +41,13 @@ and adapting the code to another dataset.
 9.  [Feedforward Neural Network](#2-feedforward-neural-network)
 10. [Batch Training](#3-batch-training)
 11. [Autoencoder for Anomaly Detection](#4-autoencoder-for-anomaly-detection)
-12. [Model Evaluation](#model-evaluation)
-13. [Results](#results)
-14. [Experimenting with the Models](#experimenting-with-the-models)
-15. [Using Your Own Dataset](#using-your-own-dataset)
-16. [Business and Financial Interpretation](#business-and-financial-interpretation)
-17. [Key Takeaways](#key-takeaways)
+12. [Saving, Loading and Using a Trained Model](#saving-loading-and-using-a-trained-model)
+13. [Model Evaluation](#model-evaluation)
+14. [Results](#results)
+15. [Experimenting with the Models](#experimenting-with-the-models)
+16. [Using Your Own Dataset](#using-your-own-dataset)
+17. [Business and Financial Interpretation](#business-and-financial-interpretation)
+18. [Key Takeaways](#key-takeaways)
 
 ------------------------------------------------------------------------
 
@@ -60,6 +61,7 @@ By following the examples, you will see how to:
     split;
 -   scale numerical inputs before training;
 -   build neural networks with the Deep Netts fluent builder API;
+-   save a trained model, load it from a file and use the loaded model for prediction;
 -   configure learning rate, stopping criteria, early stopping and batch
     training;
 -   evaluate classification models using precision, recall and F1 score
@@ -970,6 +972,57 @@ is to reconstruct the input values.
 
 ------------------------------------------------------------------------
 
+# Saving, Loading and Using a Trained Model
+
+After training, a model can be saved to a file and loaded later without rebuilding and retraining it.
+
+The examples store trained models in the `models/` directory:
+
+```java
+Files.createDirectories(Path.of("models"));
+neuralNet.save("models/feedforward-network.dnet");
+```
+
+A saved model can then be loaded with:
+
+```java
+FeedForwardNetwork loadedModel =
+        NeuralNetwork.load("models/feedforward-network.dnet", FeedForwardNetwork.class);
+```
+
+The loaded model can be used for prediction just like the trained model:
+
+```java
+MLDataItem sample = testSet.getItems().get(0);
+float[] input = sample.getInput().getValues();
+float[] prediction = loadedModel.predict(input);
+```
+
+This demonstrates a typical model lifecycle:
+
+```text
+train → save → load → predict
+```
+
+Saving a trained model is useful because training and prediction do not have to happen in the same application run. A model can be trained once, stored, and later loaded by an application that needs to make predictions.
+
+The input used with a loaded model must be prepared in the same way as the data used during training. In these examples, the prediction sample is taken from the already prepared and scaled test set.
+
+## Autoencoder Prediction
+
+The autoencoder is slightly different from the supervised classifiers. Its output is a reconstruction of the input transaction rather than a direct fraud probability.
+
+The loaded autoencoder is therefore used to calculate reconstruction error:
+
+```java
+double reconstructionError = reconstructionError(loadedAutoencoder, sample);
+int predictedFraud = reconstructionError > calibration.threshold ? 1 : 0;
+```
+
+The reconstruction error acts as the anomaly score, while the calibrated threshold determines whether the transaction is classified as fraud.
+
+------------------------------------------------------------------------
+
 # Model Evaluation
 
 Fraud detection should not be evaluated with accuracy alone.
@@ -1429,6 +1482,10 @@ Model definition
    ↓
 Training
    ↓
+Save / Load
+   ↓
+Prediction
+   ↓
 Evaluation
    ↓
 Business interpretation
@@ -1447,12 +1504,15 @@ The main ideas to take away are:
     false-positive behavior are critical in fraud detection.
 5.  **Architecture is configurable.** Deep Netts allows Java developers
     to define and train neural networks through a fluent Java API.
-6.  **Autoencoders solve a different problem.** Instead of directly
+6.  **Trained models can be reused.** A trained Deep Netts model can be
+    saved, loaded in a later application run and used for prediction
+    without retraining.
+7.  **Autoencoders solve a different problem.** Instead of directly
     learning fraud labels, they can learn normal behavior and use
     reconstruction error as an anomaly score.
-7.  **Thresholds have business meaning.** The desired balance between
+8.  **Thresholds have business meaning.** The desired balance between
     detected fraud and false alarms depends on real operational costs.
-8.  **The code is a starting point.** Dataset configuration is separated
+9.  **The code is a starting point.** Dataset configuration is separated
     from preprocessing and model code so that the same workflow can be
     adapted to other fraud-detection datasets.
 
