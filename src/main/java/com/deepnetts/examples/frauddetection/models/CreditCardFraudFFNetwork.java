@@ -57,7 +57,7 @@ public class CreditCardFraudFFNetwork {
         scaler.apply(testSet);
         
         // Enable Vector API to compare training performance:
-        //DeepNetts.getInstance().setUseVectorAPI(true);
+        DeepNetts.getInstance().setUseVectorAPI(true);
         DeepNetts.getInstance().setMaxThreads(1);
 
         FeedForwardNetwork neuralNet = FeedForwardNetwork.builder()
@@ -69,8 +69,8 @@ public class CreditCardFraudFFNetwork {
                 .build();
 
         neuralNet.getTrainer()
-                .setStopError(0.15f)
-                .setStopEpochs(100)
+                .setStopError(0.05f)
+                .setStopEpochs(10)
                 .setLearningRate(0.001f);
 
         neuralNet.train(trainingSet);

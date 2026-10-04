@@ -53,7 +53,7 @@ public class CreditCardFraudBalancedFFBatch {
         TabularDataSet<MLDataItem> batchedTestSet = DataSets.createBatchedDataset(testSet, BATCH_SIZE);
 
         // Enable Vector API to compare training performance:
-        //DeepNetts.getInstance().setUseVectorAPI(true);
+        DeepNetts.getInstance().setUseVectorAPI(true);
         DeepNetts.getInstance().setMaxThreads(1);
 
         FeedForwardNetwork neuralNet = FeedForwardNetwork.builder()
@@ -66,8 +66,8 @@ public class CreditCardFraudBalancedFFBatch {
                 .build();
 
         neuralNet.getTrainer()
-                .setStopError(0.1f)
-                .setStopEpochs(100)
+                .setStopError(0.5f)
+                .setStopEpochs(10)
                 .setLearningRate(0.1f)
                 .setBatchMode(true)
                 .setBatchSize(BATCH_SIZE);

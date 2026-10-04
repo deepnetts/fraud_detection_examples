@@ -45,7 +45,7 @@ public class CreditCardFraudFFNetworkBatch {
         int numOutputs = dataPreparation.getOutputSize();
 
         // Enable Vector API to compare training performance:
-        //DeepNetts.getInstance().setUseVectorAPI(true);
+        DeepNetts.getInstance().setUseVectorAPI(true);
         DeepNetts.getInstance().setMaxThreads(1);
 
         TabularDataSet<MLDataItem> trainingSet = DataSets.readCsv(csvPaths[0], numInputs, numOutputs, true);
