@@ -40,8 +40,14 @@ public class CreditCardFraudBalancedFFBatch {
         int numInputs = dataPreparation.getInputSize();
         int numOutputs = dataPreparation.getOutputSize();
 
-        TabularDataSet<MLDataItem> trainingSet = DataSets.readCsv(
-                preparedCsvPaths[0], numInputs, numOutputs, true);
+        TabularDataSet<MLDataItem> trainingSet = DataSets.readCsv(preparedCsvPaths[0], numInputs, numOutputs, true);
+        
+        for (int i =0; i<50; i++) {
+            TabularDataSet<MLDataItem> trainingSetAdd = DataSets.readCsv(preparedCsvPaths[0], numInputs, numOutputs, true);
+            trainingSet.addAll(trainingSetAdd);
+
+        }
+
 
         TabularDataSet<MLDataItem> testSet = DataSets.readCsv(
                 preparedCsvPaths[1], numInputs, numOutputs, true);
@@ -53,7 +59,7 @@ public class CreditCardFraudBalancedFFBatch {
         TabularDataSet<MLDataItem> batchedTestSet = DataSets.createBatchedDataset(testSet, BATCH_SIZE);
 
         // Enable Vector API to compare training performance:
-        DeepNetts.getInstance().setUseVectorAPI(true);
+        DeepNetts.getInstance().setUseVectorAPI(false);
         DeepNetts.getInstance().setMaxThreads(1);
 
         FeedForwardNetwork neuralNet = FeedForwardNetwork.builder()
@@ -77,19 +83,19 @@ public class CreditCardFraudBalancedFFBatch {
         Files.createDirectories(Path.of("models"));
         neuralNet.save(MODEL_PATH);
 
-        FeedForwardNetwork loadedModel = NeuralNetwork.load(MODEL_PATH, FeedForwardNetwork.class);
-
-        MLDataItem sample = testSet.getItems().get(0);
-        float[] input = sample.getInput().getValues();
-        float[] prediction = loadedModel.predict(input);
-
-        System.out.println("\n=== LOADED MODEL PREDICTION ===");
-        System.out.println("Predicted fraud probability: " + prediction[0]);
-        System.out.println("Actual label: " + sample.getTargetOutput().getValues()[0]);
-
         EvaluationMetrics evaluation = neuralNet.test(batchedTestSet);
 
         System.out.println("\n=== BATCH FEEDFORWARD NETWORK 2 TEST RESULTS ===");
         System.out.println(evaluation);
+        
+        FeedForwardNetwork loadedModel = NeuralNetwork.load(MODEL_PATH, FeedForwardNetwork.class);
+
+//        MLDataItem sample = batchedTestSet.getItems().get(0);
+//        float[] input = sample.getInput().getValues();
+//        float[] prediction = loadedModel.predict(input);
+//
+//        System.out.println("\n=== LOADED MODEL PREDICTION ===");
+//        System.out.println("Predicted fraud probabilities: " + prediction[0]);
+//        System.out.println("Actual label: " + sample.getTargetOutput().getValues()[0]);        
     }
 }

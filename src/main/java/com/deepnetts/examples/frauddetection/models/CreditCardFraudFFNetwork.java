@@ -91,16 +91,6 @@ public class CreditCardFraudFFNetwork {
         EvaluationMetrics evaluation = neuralNet.test(testSet);
 
         System.out.println("\n=== FEEDFORWARD NETWORK TEST RESULTS ===");
-        System.out.println(evaluation);
-        
-        neuralNet.save("testnet.dnet");
-        
-        try {
-            FeedForwardNetwork nnet = NeuralNetwork.load("testnet.dnet", FeedForwardNetwork.class);
-            System.out.println("ucitao sve ok");
-        } catch (ClassNotFoundException ex) {
-            System.getLogger(CreditCardFraudFFNetwork.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
-            System.out.println("puce bem ti");
-        }
+        System.out.println(evaluation);               
     }
 }

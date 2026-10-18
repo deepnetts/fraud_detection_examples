@@ -56,7 +56,7 @@ public class CreditCardFraudFFNetworkBench10M {
 
         
         // Enable Vector API to compare training performance:
-        DeepNetts.getInstance().setUseVectorAPI(false);
+        DeepNetts.getInstance().setUseVectorAPI(true);
         DeepNetts.getInstance().setMaxThreads(1);
 
         FeedForwardNetwork neuralNet = FeedForwardNetwork.builder()

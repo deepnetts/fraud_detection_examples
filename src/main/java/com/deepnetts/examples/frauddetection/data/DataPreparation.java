@@ -1,9 +1,6 @@
 package com.deepnetts.examples.frauddetection.data;
 
 import java.io.IOException;
-import org.dflib.DataFrame;
-import org.dflib.Series;
-import org.dflib.csv.Csv;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,6 +10,9 @@ import java.util.Random;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import org.dflib.DataFrame;
+import org.dflib.Series;
+import org.dflib.csv.Csv;
 
 public class DataPreparation {
 

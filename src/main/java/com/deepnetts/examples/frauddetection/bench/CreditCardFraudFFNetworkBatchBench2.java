@@ -41,21 +41,21 @@ public class CreditCardFraudFFNetworkBatchBench2 {
 
         TabularDataSet<MLDataItem> trainingSet = DataSets.readCsv(csvPaths[0], numInputs, numOutputs, true);
 
-       // MaxScaler scaler = DataSets.scaleToMax(trainingSet);
+        MaxScaler scaler = DataSets.scaleToMax(trainingSet);
 
         TabularDataSet<MLDataItem> batchedTrainingSet = DataSets.createBatchedDataset(trainingSet, BATCH_SIZE);
 
         FeedForwardNetwork neuralNet = FeedForwardNetwork.builder()
                 .addInputLayer(numInputs, BATCH_SIZE)
-                .addFullyConnectedLayer(32, ActivationType.RELU)
-                .addFullyConnectedLayer(16, ActivationType.RELU)
+                .addFullyConnectedLayer(128, ActivationType.RELU)
+                .addFullyConnectedLayer(128, ActivationType.RELU)
                 .addOutputLayer(numOutputs, ActivationType.SIGMOID)
                 .lossFunction(LossType.CROSS_ENTROPY)
                 .build();
 
         neuralNet.getTrainer()
                 .setStopError(0.05f)
-                .setStopEpochs(100)
+                .setStopEpochs(5)
                 .setLearningRate(0.01f)
                 .setBatchMode(true)
                 .setBatchSize(BATCH_SIZE);

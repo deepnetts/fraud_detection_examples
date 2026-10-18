@@ -21,9 +21,6 @@ import javax.visrec.ml.eval.EvaluationMetrics;
 
 public class CreditCardFraudFFNetworkBench1 {
 
-    private static final double TRAIN_RATIO = 0.8;
-    private static final long RANDOM_SEED = 42;
-
     public static void main(String[] args)
             throws DeepNettsException, IOException {
 
