@@ -56,9 +56,9 @@ public class CreditCardFraudBalancedFFBatchGPU {
 
         FeedForwardNetwork neuralNet = FeedForwardNetwork.builder()
                 .addInputLayer(numInputs, BATCH_SIZE)
-                .addFullyConnectedLayer(32, ActivationType.RELU)
-                .addFullyConnectedLayer(16, ActivationType.RELU)
-                .addFullyConnectedLayer(8, ActivationType.RELU)
+                .addFullyConnectedLayer(32, ActivationType.TANH)
+                .addFullyConnectedLayer(16, ActivationType.TANH)
+                .addFullyConnectedLayer(8, ActivationType.TANH)
                 .addOutputLayer(numOutputs, ActivationType.SIGMOID)
                 .lossFunction(LossType.CROSS_ENTROPY)
                 .build();
@@ -66,7 +66,7 @@ public class CreditCardFraudBalancedFFBatchGPU {
         neuralNet.getTrainer()
                 .setStopError(0.5f)
                 .setStopEpochs(10)
-                .setLearningRate(0.1f)
+                .setLearningRate(0.5f)
                 .setBatchMode(true)
                 .setBatchSize(BATCH_SIZE);
 

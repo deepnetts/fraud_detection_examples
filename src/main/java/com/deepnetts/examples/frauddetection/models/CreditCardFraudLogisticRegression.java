@@ -58,7 +58,7 @@ public class CreditCardFraudLogisticRegression {
         scaler.apply(testSet);
 
         // Enable Vector API to compare training performance:
-        // DeepNetts.getInstance().setUseVectorAPI(true);
+        DeepNetts.getInstance().setUseVectorAPI(true);
         
         DeepNetts.getInstance().setMaxThreads(1);
 
@@ -87,7 +87,7 @@ public class CreditCardFraudLogisticRegression {
 
         MLDataItem sample = testSet.getItems().get(0);
         float[] input = sample.getInput().getValues();
-        float[] prediction = loadedModel.predict(input);
+        float[] prediction = logisticRegression.predict(input);
 
         System.out.println("\n=== LOADED MODEL PREDICTION ===");
         System.out.println("Predicted fraud probability: " + prediction[0]);
